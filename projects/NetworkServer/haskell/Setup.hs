@@ -21,6 +21,7 @@ import System.FilePath ( (</>) )
 
 #if MIN_VERSION_Cabal(2,0,0)
 import           Distribution.Types.PackageName (PackageName, unPackageName)
+import           Distribution.Types.UnqualComponentName (UnqualComponentName, unUnqualComponentName)
 import           Distribution.Simple.BuildPaths (autogenPackageModulesDir)
 import           Distribution.Version (Version, versionNumbers)
 
@@ -30,6 +31,9 @@ showVersion = intercalate "." . fmap show . versionNumbers
 autogenModulesDirCompat :: LocalBuildInfo -> String
 autogenModulesDirCompat = autogenPackageModulesDir
 
+unqualComponentNameCompat :: UnqualComponentName -> String
+unqualComponentNameCompat = unUnqualComponentName
+
 #else
 import           Distribution.Simple (PackageName, unPackageName)
 import           Distribution.Simple.BuildPaths (autogenModulesDir)
@@ -37,6 +41,9 @@ import           Data.Version (showVersion)
 
 autogenModulesDirCompat :: LocalBuildInfo -> String
 autogenModulesDirCompat = autogenModulesDir
+
+unqualComponentNameCompat :: String -> String
+unqualComponentNameCompat = id
 #endif
 
 main :: IO ()
@@ -52,8 +59,8 @@ generateBuildModule verbosity pkg lbi = do
   createDirectoryIfMissingVerbose verbosity True dir
   withLibLBI pkg lbi $ \_ libcfg -> do
     withTestLBI pkg lbi $ \suite suitecfg -> do
-      rewriteFile (dir </> "Build_" ++ testName suite ++ ".hs") $ unlines
-        [ "module Build_" ++ testName suite ++ " where"
+      rewriteFile (dir </> "Build_" ++ unqualComponentNameCompat (testName suite) ++ ".hs") $ unlines
+        [ "module Build_" ++ unqualComponentNameCompat (testName suite) ++ " where"
         , "deps :: [String]"
         , "deps = " ++ (show $ testDeps libcfg suitecfg)
         ]
