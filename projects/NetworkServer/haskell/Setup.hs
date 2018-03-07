@@ -25,6 +25,8 @@ import           Distribution.Types.UnqualComponentName (UnqualComponentName, un
 import           Distribution.Simple.BuildPaths (autogenPackageModulesDir)
 import           Distribution.Version (Version, versionNumbers)
 
+import           Data.List (intercalate)
+
 showVersion :: Version -> String
 showVersion = intercalate "." . fmap show . versionNumbers
 

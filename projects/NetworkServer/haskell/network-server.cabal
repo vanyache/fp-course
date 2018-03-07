@@ -104,3 +104,15 @@ test-suite          doctests
 
   hs-source-dirs:
                     test
+
+other-modules:      Course.ApplicativeTest
+                    Course.ComonadTest
+                    Course.ExtendTest
+                    Course.FunctorTest
+                    Course.JsonParserTest
+                    Course.ListTest
+                    Course.MonadTest
+                    Course.OptionalTest
+                    Course.StateTTest
+                    Course.StateTest
+                    Course.ValidationTest
