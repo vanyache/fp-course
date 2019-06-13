@@ -82,8 +82,13 @@ data Op =
 -- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 convertInteractive ::
   IO ()
-convertInteractive =
-  error "todo: Course.Interactive#convertInteractive"
+convertInteractive = (\ str -> putStrLn (toUpper <$> str) ) =<< putStr "Enter a string: " *> getLine
+
+convertInteractive' :: IO ()
+convertInteractive' =  do 
+    putStr "Enter a string: "
+    str <- getLine
+    putStrLn (toUpper <$> str)
 
 -- |
 --
@@ -110,9 +115,19 @@ convertInteractive =
 -- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 reverseInteractive ::
   IO ()
-reverseInteractive =
-  error "todo: Course.Interactive#reverseInteractive"
+reverseInteractive = do
+  putStr "Enter a file name to reverse: "
+  sourcefileName <- getLine
+  putStr "Enter a file name to save output: "
+  outputfileName <- getLine
 
+  fileContent <- readFile sourcefileName
+  if sourcefileName == outputfileName
+  then 
+    putStrLn "Can't write to the same file"
+  else 
+    (putStrLn $ reverse fileContent) *>
+    (writeFile outputfileName (reverse fileContent))
 -- |
 --
 -- * Ask the user to enter a string to url-encode.
@@ -136,8 +151,18 @@ reverseInteractive =
 -- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 encodeInteractive ::
   IO ()
-encodeInteractive =
-  error "todo: Course.Interactive#encodeInteractive"
+encodeInteractive = do
+  putStr "Enter a string to encode: "
+  str <- getLine
+  putStrLn (encode str)  
+
+encode :: Chars -> Chars
+encode Nil = Nil
+encode (h:.t) = (case h of
+                 ' ' -> "%20"
+                 '\t' -> "%09"
+                 '\"' -> "%22"
+                 a -> pure a) ++ (encode t)
 
 interactive ::
   IO ()
