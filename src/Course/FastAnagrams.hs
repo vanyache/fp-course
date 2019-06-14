@@ -14,8 +14,7 @@ fastAnagrams ::
   Chars
   -> FilePath
   -> IO (List Chars)
-fastAnagrams =
-  error "todo: Course.FastAnagrams#fastAnagrams"
+fastAnagrams str path = (intersectBy (==) (permutations str) . lines) <$> (readFile path)
 
 newtype NoCaseString =
   NoCaseString {
